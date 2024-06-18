@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Bug - SIMDS</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Main Content -->
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Report Bug</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="bugReportForm" action="report.php" method="POST">
+                            <div class="form-group">
+                                <label for="inputEmail">Masukkan Email Anda</label>
+                                <input type="email" class="form-control" id="inputEmail" name="email" placeholder="Email Anda" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputTitle">Masukkan Judul</label>
+                                <input type="text" class="form-control" id="inputTitle" name="judul" placeholder="Judul Laporan" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputReport">Masukkan Laporan Bug</label>
+                                <textarea class="form-control" id="inputReport" name="laporan" rows="5" placeholder="Deskripsi Laporan Bug" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Kirim</button>
+                            <button type="button" class="btn btn-secondary ml-2" onclick="goToHome()">Kembali</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Main Content -->
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        // Fungsi untuk kembali ke halaman beranda
+        function goToHome() {
+            window.location.href = "index.html";
+        }
+
+        // Menangani pengiriman formulir
+        $(document).ready(function() {
+            $('#bugReportForm').submit(function(e) {
+                e.preventDefault(); // Hindari pengiriman form default
+
+                // Ambil nilai input
+                var email = $('#inputEmail').val();
+                var judul = $('#inputTitle').val();
+                var laporan = $('#inputReport').val();
+
+                // Kirim data ke server
+                $.ajax({
+                    url: 'report.php',
+                    method: 'POST',
+                    data: {
+                        email: email,
+                        judul: judul,
+                        laporan: laporan
+                    },
+                    success: function(response) {
+                        // Tampilkan popup notifikasi
+                        $('#bugReportForm')[0].reset(); // Reset form
+                        $('#successModal').modal('show');
+                    },
+                    error: function(error) {
+                        alert('Terjadi kesalahan dalam pengiriman laporan.');
+                    }
+                });
+            });
+
+            // Fungsi untuk kembali ke beranda setelah menekan tombol OK pada popup
+            $('#okButton').click(function() {
+                goToHome();
+            });
+        });
+    </script>
+
+    <!-- Modal untuk notifikasi berhasil -->
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Laporan Berhasil Dikirim</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Laporan bug Anda telah berhasil dikirim.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="okButton" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Modal -->
+</body>
+</html>
